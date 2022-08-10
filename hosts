@@ -1,2 +1,4 @@
 [tomcat_nodes]
-192.168.10.10 # Add Server IP address, one line per server
+centos1 ansible_host=192.168.0.146 ansible_connection=ssh ansible_user=root
+centos2 ansible_host=192.168.0.107 ansible_connection=ssh ansible_user=root
+centos3 ansible_host=192.168.0.109 ansible_connection=ssh ansible_user=root

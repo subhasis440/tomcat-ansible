@@ -1,0 +1,15 @@
+---
+- name: Play 1 - git Install
+  hosts: tomcat-server
+  become: yes
+  tasks:
+          - name: Rebooting the cloud server/bare metal box
+            reboot:
+          - name: Wait for the machine to come back online
+            wait_for_connection:
+              connect_timeout: 60
+              sleep: 5
+              delay: 5
+              timeout: 300
+
+

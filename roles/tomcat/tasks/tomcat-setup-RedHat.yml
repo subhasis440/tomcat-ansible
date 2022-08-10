@@ -2,16 +2,23 @@
   yum:
     name: epel-release
     state: present
-
+-
+  ping: ~
+  
 - name: Install basic packages
   package:
-    name: ['vim','bash-completion','tmux','tree','htop','wget','unzip','curl','git']
+    name: ['vim','bash-completion','tmux','tree','htop','wget','unzip','curl','git','nano']
     state: present
 
-- name: Install Java 8 CentOS
+- name: Install Java 11 CentOS
   yum:
-    name: java-1.8.0-openjdk
+    name: java-11-openjdk
     state: present
+- name: Setting Java 11
+  alternatives:
+    name: java
+    link: /usr/bin/java
+    path: /usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.el7_9.x86_64/bin/java
 
 - name: Add tomcat group
   group:
@@ -74,7 +81,10 @@
     permanent: true
     state: enabled
     immediate: yes
-  when: ansible_service_mgr == "systemd"
+  when: ansible_service_mgr == "systemd"      
+
+- name: reload firewalld
+  command: firewall-cmd --reload
 
 - name: Set UI access credentials
   template:
@@ -90,3 +100,11 @@
     - /usr/share/tomcat/webapps/host-manager/META-INF/context.xml
     - /usr/share/tomcat/webapps/manager/META-INF/context.xml
   notify: restart tomcat
+
+- name: start tomcat
+  command: nohup /usr/share/tomcat/bin/startup.sh
+  tags: start-tomcat
+- name: Reload apache
+  service: 
+    name: httpd
+    state: reloaded

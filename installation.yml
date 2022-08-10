@@ -1,0 +1,37 @@
+- name: Play 1 - git Install
+  hosts: tomcat-server
+  become: yes
+  tasks:
+    -
+      name: "Displaying Java version"
+      shell: java -version
+      register: java_result
+      ignore_errors: True
+    -
+      debug: var=java_result.stderr_lines
+
+    - name: Install packages
+      yum:
+        name: '{{ item }}'
+        state: present
+        update_cache: True
+      loop:
+        - git
+        - tree
+        - wget
+        - maven
+        - httpd
+        - java-11-openjdk
+    - name: Setting Java 11
+      alternatives:
+        name: java
+        link: /usr/bin/java
+        path: /usr/lib/jvm/java-11-openjdk-11.0.16.0.8-1.el7_9.x86_64/bin/java
+    - name: remove packages
+      yum:
+        name: '{{ item }}'
+        state: absent
+        update_cache: True
+      loop:
+        - nano   
+
