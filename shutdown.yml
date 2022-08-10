@@ -1,0 +1,7 @@
+---
+- hosts: tomcat_nodes
+  gather_facts: no
+  become: yes
+  tasks:
+    - name: "shutdown"
+      shell: /sbin/shutdown -h now
